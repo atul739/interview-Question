@@ -1,0 +1,122 @@
+🔹 1. What is Memory Management?
+Memory management in Java is the process of allocating, using, and freeing memory inside the Java Virtual Machine (JVM) efficiently and automatically.
+Unlike C/C++, Java has automatic memory management — the Garbage Collector (GC) frees up memory when objects are no longer referenced.
+
+
+2. JVM Memory Structure
+Java memory is divided into multiple runtime areas.
+🧩 JVM Memory Components
+Area	Description	Contains
+Heap	Stores all objects and instance variables	Objects, arrays, runtime data
+Stack	Stores method calls and local variables	Frames, primitive values, references
+Metaspace (or PermGen in Java 7-)	Stores class metadata	Class definitions, method info
+PC Register	Holds current instruction address	Current executing instruction
+Native Method Stack	Used for native (JNI) calls	C/C++ method calls
+
+
+3. Heap Memory Division
+Heap memory is the largest part of JVM memory and is managed by the Garbage Collector.
+🧩 Heap Structure
+Region	Description
+Young Generation	Newly created objects
+Old (Tenured) Generation	Long-lived objects
+Eden Space	New objects created here first
+Survivor Spaces (S0 & S1)	Objects that survive minor GCs
+
+
+📊 Example Flow
+	1. New object → goes to Eden Space.
+	2. If it survives GC → moves to Survivor Space.
+	3. If it survives multiple cycles → promoted to Old Generation.
+	4. When old generation fills → Major GC occurs.
+
+🔹 4. Garbage Collection (GC)
+GC automatically removes unused (unreachable) objects to free memory.
+🧰 Types of Garbage Collectors
+GC Type	Description	Use Case
+Serial GC	Single-threaded, simple	Small applications
+Parallel GC	Multi-threaded	Throughput-focused
+CMS (Concurrent Mark Sweep)	Low pause time	Web servers (deprecated in Java 14)
+G1 GC (Garbage First)	Balanced for latency and throughput	Default in Java 9+
+ZGC / Shenandoah GC	Ultra-low pause	Real-time systems, large heaps (>8GB)
+
+⚙️ GC Phases (Simplified)
+	1. Mark – Identify reachable objects.
+	2. Sweep – Remove unreachable ones.
+	3. Compact – Reorganize heap to prevent fragmentation.
+
+🔹 5. Stack vs Heap
+Feature	Stack	Heap
+Memory Type	Static	Dynamic
+Stores	Local variables, references	Objects
+Access Speed	Fast	Slower
+Thread Safety	Each thread has its own	Shared among threads
+Managed By	JVM directly	Garbage Collector
+
+🔹 6. OutOfMemory Errors (OOM)
+Error	Cause	Solution
+java.lang.OutOfMemoryError: Java heap space	Heap full	Increase -Xmx, fix memory leaks
+java.lang.OutOfMemoryError: Metaspace	Too many loaded classes	Tune -XX:MaxMetaspaceSize
+java.lang.StackOverflowError	Deep recursion	Increase stack size (-Xss)
+
+🔹 7. Memory Leaks in Java
+Even with GC, memory leaks can occur if references are never removed.
+🔎 Common Causes
+	• Static fields holding large objects
+	• Unclosed streams or connections
+	• Listeners not deregistered
+	• Caches without eviction
+	• Inner classes holding outer references
+✅ How to Detect
+	• Tools: VisualVM, Eclipse MAT, JProfiler
+	• Logs: -XX:+HeapDumpOnOutOfMemoryError
+✅ How to Prevent
+	• Use WeakReference or SoftReference for caches
+	• Use try-with-resources for streams
+	• Remove unused listeners or static references
+
+🔹 8. JVM Memory Tuning (Production)
+Option	Description
+-Xms<size>	Initial heap size
+-Xmx<size>	Maximum heap size
+-XX:+UseG1GC	Use G1 GC
+-XX:MaxGCPauseMillis=200	Target pause time
+-XX:+PrintGCDetails	Log GC info
+
+Example:
+
+java -Xms512m -Xmx2048m -XX:+UseG1GC -jar app.jar
+
+
+🔹 9. Example Illustration
+
+public class MemoryExample {
+    public static void main(String[] args) {
+        Runtime runtime = Runtime.getRuntime();
+System.out.println("Total Memory: " + runtime.totalMemory());
+        System.out.println("Free Memory: " + runtime.freeMemory());
+for (int i = 0; i < 100000; i++) {
+            new Object();
+        }
+System.gc(); // Request GC
+        System.out.println("Free Memory after GC: " + runtime.freeMemory());
+    }
+}
+
+
+10. Summary Table
+Concept	Description
+Heap	Object storage
+Stack	Method/local vars
+GC	Automatic cleanup
+Metaspace	Class metadata
+OOM	Heap overflow
+Tuning	-Xms, -Xmx, G1GC
+
+Interview-Ready Answer
+	“Memory management in Java is handled by the JVM using automatic garbage collection.
+	Objects are created in the heap and local variables live on the stack.
+	The GC reclaims memory for objects that are no longer reachable.
+	JVM divides the heap into generations (Eden, Survivor, Old) to optimize GC efficiency.
+	For production, we can tune memory using flags like -Xms, -Xmx, and use profiling tools to detect leaks.”
+
