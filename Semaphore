@@ -1,0 +1,113 @@
+🧠 What is a Semaphore in Java?
+A Semaphore is a synchronization mechanism that controls how many threads can access a shared resource at the same time.
+It’s part of java.util.concurrent package.
+
+💡 Think of it like:
+	A parking lot with limited slots.
+	Only N cars (threads) can park at a time.
+	If the lot is full, new cars wait until a slot is free.
+That’s exactly how Semaphore works!
+
+
+🧩 Syntax
+
+Semaphore semaphore = new Semaphore(int permits);
+	• permits → Number of threads that can access the resource concurrently.
+	• acquire() → Thread requests a permit (waits if none available).
+	• release() → Thread releases a permit (notifies waiting threads).
+
+✅ Example: Semaphore in Action
+
+import java.util.concurrent.Semaphore;
+
+class SharedResource {
+    private final Semaphore semaphore = new Semaphore(2); // 2 permits
+
+    void accessResource(String threadName) {
+        try {
+            System.out.println(threadName + " trying to acquire permit...");
+            semaphore.acquire(); // acquire a permit
+            System.out.println(threadName + " acquired permit!");
+            
+            // simulate resource usage
+            Thread.sleep(2000);
+            
+            System.out.println(threadName + " releasing permit...");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            semaphore.release(); // release permit
+        }
+    }
+}
+
+public class SemaphoreDemo {
+    public static void main(String[] args) {
+        SharedResource resource = new SharedResource();
+
+        for (int i = 1; i <= 5; i++) {
+            final String threadName = "Thread-" + i;
+            new Thread(() -> resource.accessResource(threadName)).start();
+        }
+    }
+}
+
+
+🧾 Output (example)
+
+Thread-1 trying to acquire permit...
+Thread-2 trying to acquire permit...
+Thread-1 acquired permit!
+Thread-2 acquired permit!
+Thread-3 trying to acquire permit...
+Thread-4 trying to acquire permit...
+Thread-5 trying to acquire permit...
+Thread-1 releasing permit...
+Thread-3 acquired permit!
+Thread-2 releasing permit...
+Thread-4 acquired permit!
+...
+
+
+➡️ Only 2 threads (permits = 2) access the resource at once — others wait until released.
+
+🧩 Key Methods
+Method	Description
+acquire()	Acquires a permit, blocking if necessary
+tryAcquire()	Tries to acquire without waiting
+release()	Releases a permit
+availablePermits()	Returns number of available permits
+drainPermits()	Removes all available permits
+
+
+⚙️ Types of Semaphores
+Type	Description
+Fair Semaphore	Threads acquire permits in FIFO order
+Non-Fair Semaphore	Threads acquire permits randomly (default, faster)
+
+Semaphore fairSemaphore = new Semaphore(3, true); // fair version
+
+
+🧩 Real-world Use Cases
+	1. Database connection pool – limit number of DB connections
+	2. API rate limiting – allow only N concurrent API calls
+	3. Resource sharing – file access, printing, network sockets
+	4. Thread throttling – control number of active worker threads
+
+🔍 Comparison with Other Sync Tools
+Tool	Purpose
+synchronized	Allows only 1 thread at a time
+Lock	Provides advanced locking control
+Semaphore	Allows N threads at a time
+CountDownLatch	Waits for threads to finish
+CyclicBarrier	Waits for all threads to reach a barrier
+
+
+✅ Summary
+Feature	Description
+Class	java.util.concurrent.Semaphore
+Introduced In	Java 1.5
+Controls	Number of concurrent threads
+Methods	acquire(), release(), tryAcquire()
+Best Use	Throttling or resource access control
+
