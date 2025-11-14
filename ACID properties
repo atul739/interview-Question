@@ -1,0 +1,42 @@
+ACID properties are a set of four key principles that ensure reliability, consistency, and integrity of transactions in a database management system (DBMS).
+Let’s break them down 👇
+
+A — Atomicity
+	• Definition:
+Ensures that a transaction is treated as a single unit of work — it either completes fully or does not happen at all.
+	• Example:
+Suppose you transfer ₹1000 from Account A to Account B.
+		○ Debit ₹1000 from A ✅
+		○ Credit ₹1000 to B ✅
+If any of these steps fail, the whole transaction is rolled back — no money is deducted or credited.
+	• Key phrase: “All or nothing.”
+
+C — Consistency
+	• Definition:
+Ensures that a transaction brings the database from one valid state to another valid state, maintaining data integrity and all defined rules (constraints, triggers, etc.).
+	• Example:
+After the transfer, the total balance of A + B should remain the same as before.
+(If ₹1000 disappears or duplicates, consistency is broken.)
+
+I — Isolation
+	• Definition:
+Ensures that concurrent transactions execute independently, without affecting each other’s outcome.
+	• Example:
+Two people transferring money at the same time should not interfere — the database behaves as if each transaction happened one after another.
+	• Handled by:
+Locking mechanisms and transaction isolation levels (READ COMMITTED, SERIALIZABLE, etc.)
+
+D — Durability
+	• Definition:
+Once a transaction is committed, its changes are permanent, even if the system crashes right after.
+	• Example:
+After the transfer completes, even a sudden power loss won't revert it.
+	• Ensured by:
+Writing data to non-volatile storage (like disk logs or database journals).
+
+In short:
+Property	Meaning	Ensures
+Atomicity	All or nothing	No partial updates
+Consistency	Valid state transitions	Data integrity
+Isolation	Independent execution	No interference
+Durability	Permanent results	Crash safety
