@@ -1,0 +1,53 @@
+🧩 Transaction Isolation Levels in Java
+🔹 What is an Isolation Level?
+	• Isolation is one of the ACID properties of a transaction.
+	• It defines how much one transaction is isolated from other concurrent transactions.
+	• It controls how and when the changes made by one operation become visible to others.
+
+⚙️ Isolation Levels (from weakest to strongest)
+Isolation Level	Description	Problems Prevented	Problems Possible
+1️⃣ READ_UNCOMMITTED	Transactions can read uncommitted (dirty) data from other transactions.	❌ Prevents nothing	❌ Dirty Read, ❌ Non-Repeatable Read, ❌ Phantom Read
+2️⃣ READ_COMMITTED	A transaction can only read data that’s already committed.	✅ Prevents Dirty Reads	❌ Non-Repeatable Read, ❌ Phantom Read
+3️⃣ REPEATABLE_READ	Ensures same row read multiple times will return the same data, even if other transactions modify it.	✅ Prevents Dirty & Non-Repeatable Reads	❌ Phantom Read
+4️⃣ SERIALIZABLE	Highest level — transactions execute sequentially as if one after another.	✅ Prevents Dirty, Non-Repeatable, Phantom Reads	❌ Very slow (locks entire table)
+
+🧠 Common Transaction Problems Explained
+Problem	Description	Example
+Dirty Read	Reading uncommitted data from another transaction	T1 updates a row but hasn’t committed → T2 reads it
+Non-Repeatable Read	Same query gives different results in same transaction	T1 reads a row, T2 updates it → T1 reads again, value changed
+Phantom Read	Same query returns different number of rows	T1 reads all rows, T2 inserts new row → T1 reads again, extra row appears
+
+⚙️ How Isolation Levels Work in Java (Spring / JDBC)
+✅ Using Spring Boot / Spring Transactional
+You can set isolation levels using @Transactional annotation:
+
+@Transactional(isolation = Isolation.READ_COMMITTED)
+public void updateAccount() {
+    // business logic here
+}
+Supported Constants:
+
+Isolation.READ_UNCOMMITTED
+Isolation.READ_COMMITTED
+Isolation.REPEATABLE_READ
+Isolation.SERIALIZABLE
+
+✅ Default Isolation Level
+Database	Default Isolation
+Oracle	READ_COMMITTED
+MySQL (InnoDB)	REPEATABLE_READ
+PostgreSQL	READ_COMMITTED
+SQL Server	READ_COMMITTED
+
+🧩 Performance vs Consistency Trade-off
+Level	Consistency	Performance
+READ_UNCOMMITTED	❌ Low	⚡ High
+READ_COMMITTED	⚖️ Moderate	⚡ High
+REPEATABLE_READ	✅ High	🐢 Slower
+SERIALIZABLE	✅ Highest	🐢 Slowest
+
+💡 Interview Summary Answer:
+	“Isolation level defines how transactions interact with each other.
+	Java supports four main levels — READ_UNCOMMITTED, READ_COMMITTED, REPEATABLE_READ, and SERIALIZABLE.
+	As you go up, consistency increases but performance decreases.
+	Typically, READ_COMMITTED is used as a balance between data safety and performance.”
