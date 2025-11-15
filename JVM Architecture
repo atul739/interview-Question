@@ -1,0 +1,189 @@
+🧠 What is JVM?
+
+JVM (Java Virtual Machine) is the engine that runs Java applications.
+It provides a runtime environment to execute Java bytecode (compiled .class files).
+
+In short:
+
+Java code → compiled by JDK → bytecode (.class) → executed by JVM
+
+⚙️ JVM Architecture
+
+The JVM consists of three main parts:
+
+Class Loader Subsystem
+
+Runtime Data Areas (Memory)
+
+Execution Engine
+
+1️⃣ Class Loader Subsystem
+
+Responsible for loading class files into memory.
+
+Steps:
+
+Loading: Finds and loads .class files.
+
+Linking:
+
+Verification: Checks bytecode for security & correctness.
+
+Preparation: Allocates memory for static variables.
+
+Resolution: Replaces symbolic references with direct ones.
+
+Initialization: Assigns values to static variables and executes static blocks.
+
+Types of Class Loaders:
+
+Bootstrap ClassLoader → Loads core Java classes (java.lang, java.util, etc.)
+
+Extension ClassLoader → Loads JRE extension libraries (ext folder)
+
+Application ClassLoader → Loads user-defined classes from the classpath
+
+2️⃣ Runtime Data Areas (JVM Memory)
+
+JVM memory is divided into five key areas:
+
+🔸 a) Method Area
+
+Stores class metadata, static variables, and method code.
+
+Shared among all threads.
+
+Example: static int count;, method definitions, etc.
+
+🔸 b) Heap Area
+
+Stores objects and instance variables.
+
+Shared by all threads.
+
+Garbage Collector operates here.
+
+🔸 c) Stack Area
+
+Each thread has its own stack.
+
+Stores local variables and method calls (frames).
+
+Example:
+
+int x = 10; // stored in stack
+Person p = new Person(); // object in heap, reference in stack
+
+🔸 d) PC (Program Counter) Register
+
+Each thread has one.
+
+Keeps track of the current executing instruction.
+
+🔸 e) Native Method Stack
+
+Used for methods written in native languages like C/C++ (JNI).
+
+3️⃣ Execution Engine
+
+Responsible for executing the bytecode.
+
+Components:
+
+🔹 a) Interpreter
+
+Reads and executes bytecode line by line.
+
+Slower than native execution.
+
+🔹 b) JIT (Just-In-Time Compiler)
+
+Converts frequently executed bytecode into native machine code for speed.
+
+Improves performance dramatically.
+
+🔹 c) Garbage Collector (GC)
+
+Automatically removes unused objects from the heap.
+
+Works in multiple phases: Mark → Sweep → Compact.
+
+Example:
+
+Person p = new Person();
+p = null; // eligible for GC
+System.gc(); // suggest GC (not guaranteed)
+
+🧩 JVM Internal Flow
+
+You compile: javac MyClass.java → produces MyClass.class (bytecode)
+
+JVM loads the class into memory via ClassLoader
+
+Bytecode is stored in method area
+
+JVM allocates memory for objects in the heap
+
+JVM creates stack frames for each method call
+
+The Execution Engine interprets or JIT-compiles bytecode
+
+Garbage Collector cleans unused objects
+
+🔥 JVM vs JRE vs JDK
+Component	Description	Contains
+JVM	Runs Java bytecode	Part of JRE
+JRE	Runtime Environment (JVM + Libraries)	JVM + Core libraries
+JDK	Development Kit (for compiling & running)	JRE + Compiler + Tools
+
+Diagram:
+
+JDK = JRE + Compiler + Tools
+JRE = JVM + Libraries
+JVM = Executes bytecode
+
+🧠 Important JVM Concepts
+Concept	Description
+Bytecode	Intermediate Java code executed by JVM
+ClassLoader	Loads .class files
+Heap	Stores objects
+Stack	Stores method calls & local variables
+JIT Compiler	Converts bytecode to native code for speed
+Garbage Collection	Automatic memory cleanup
+Native Methods	C/C++ functions accessed via JNI
+🧩 Example
+public class Demo {
+    public static void main(String[] args) {
+        int x = 10; // Stack
+        Demo d = new Demo(); // Heap
+        d.display();
+    }
+    void display() {
+        System.out.println("JVM Example");
+    }
+}
+
+
+Flow:
+
+Demo.class → loaded by ClassLoader
+
+x stored in stack
+
+new Demo() stored in heap
+
+display() call creates a stack frame
+
+After method completes, stack frame is popped
+
+d becomes eligible for GC
+
+✅ In Summary
+Component	Role
+Class Loader	Loads class files
+Method Area	Class info & static data
+Heap	Objects
+Stack	Local variables & calls
+PC Register	Current instruction
+Execution Engine	Executes bytecode
+GC	Cleans up memory
