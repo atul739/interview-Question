@@ -1,0 +1,120 @@
+🌿 1. map() in Java
+Definition:
+
+map() is used to transform each element of a stream into another form.
+
+It performs a one-to-one mapping.
+
+Syntax:
+<R> Stream<R> map(Function<? super T, ? extends R> mapper)
+
+Key Point:
+
+➡ Each element of the stream is mapped to exactly one new element.
+
+Example – map()
+List<String> names = Arrays.asList("Atul", "Ramesh", "Suresh");
+
+List<Integer> nameLengths = names.stream()
+                                 .map(String::length)
+                                 .toList();
+
+System.out.println(nameLengths);
+
+
+Output:
+
+[4, 6, 6]
+
+
+✅ Here:
+
+"Atul" → 4
+
+"Ramesh" → 6
+
+"Suresh" → 6
+
+Each input element maps to exactly one output element.
+
+🌊 2. flatMap() in Java
+Definition:
+
+flatMap() is used to flatten nested structures (like lists of lists) and then apply mapping.
+
+It performs a one-to-many mapping.
+
+Syntax:
+<R> Stream<R> flatMap(Function<? super T, ? extends Stream<? extends R>> mapper)
+
+Key Point:
+
+➡ Each element of the stream is mapped to a Stream, and then all resulting streams are flattened into a single stream.
+
+Example – flatMap()
+List<List<String>> namesList = Arrays.asList(
+    Arrays.asList("Atul", "Ramesh"),
+    Arrays.asList("Suresh", "Mahesh")
+);
+
+List<String> allNames = namesList.stream()
+                                 .flatMap(List::stream)
+                                 .toList();
+
+System.out.println(allNames);
+
+
+Output:
+
+[Atul, Ramesh, Suresh, Mahesh]
+
+
+✅ Here:
+
+Each inner list → converted to a Stream (Stream<String>)
+
+flatMap() merges (flattens) all these inner streams into a single stream.
+
+Difference Visually
+Feature	map()	flatMap()
+Mapping Type	One-to-One	One-to-Many
+Output Type	Stream of values	Flattened Stream
+Use Case	Transform elements	Flatten + transform elements
+Example Input	["Atul", "Ramesh"]	[["Atul","Ramesh"], ["Suresh","Mahesh"]]
+Example Output	[4, 6]	[Atul, Ramesh, Suresh, Mahesh]
+🧩 Practical Example: Extract words from a list of sentences
+List<String> sentences = Arrays.asList("Java is powerful", "Streams are cool");
+
+List<String> words = sentences.stream()
+    .map(sentence -> sentence.split(" "))    // Stream<String[]>
+    .flatMap(Arrays::stream)                 // Stream<String>
+    .toList();
+
+System.out.println(words);
+
+
+Output:
+
+[Java, is, powerful, Streams, are, cool]
+
+
+map() → gives Stream<String[]> (list of word arrays)
+
+flatMap() → merges all word arrays into a single Stream<String>
+
+🧠 In Short
+Concept	map()	flatMap()
+Input	Stream<T>	Stream<T>
+Function Output	R	Stream<R>
+Result	Stream<R>	Stream<R> (flattened)
+Best Used For	Simple transformations	Nested collections or Streams of Streams
+✅ Summary Example
+// map() Example
+Stream.of("a", "b", "c")
+      .map(String::toUpperCase)
+      .forEach(System.out::println); // A, B, C
+
+// flatMap() Example
+Stream.of("Hello World", "Java Stream")
+      .flatMap(s -> Arrays.stream(s.split(" ")))
+      .forEach(System.out::println); // Hello, World, Java, Stream
