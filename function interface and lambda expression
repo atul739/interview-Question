@@ -1,0 +1,180 @@
+1. Functional Interface
+Definition:
+
+A Functional Interface is an interface with exactly one abstract method.
+It can have:
+
+One abstract method (required)
+
+Any number of default or static methods
+
+It is the foundation for lambda expressions in Java 8.
+
+Annotation:
+@FunctionalInterface
+
+
+This annotation is optional but recommended — it helps the compiler enforce the rule of having only one abstract method.
+
+✅ Example: Functional Interface
+@FunctionalInterface
+interface Calculator {
+    int add(int a, int b);  // single abstract method
+}
+
+Usage:
+
+Before Java 8 👇
+
+class Main {
+    public static void main(String[] args) {
+        Calculator calc = new Calculator() {
+            @Override
+            public int add(int a, int b) {
+                return a + b;
+            }
+        };
+        System.out.println(calc.add(5, 3)); // 8
+    }
+}
+
+
+After Java 8 (with Lambda 👇)
+
+class Main {
+    public static void main(String[] args) {
+        Calculator calc = (a, b) -> a + b;
+        System.out.println(calc.add(5, 3)); // 8
+    }
+}
+
+
+💡 Functional Interface enables Lambda Expression usage!
+
+⚡ 2. Lambda Expression
+Definition:
+
+A Lambda Expression is a short block of code that takes in parameters and returns a value.
+It provides a concise syntax to implement functional interfaces.
+
+Syntax:
+(parameters) -> expression
+
+
+or
+
+(parameters) -> { statements; }
+
+✅ Examples
+
+Example 1: No Parameter
+
+@FunctionalInterface
+interface Hello {
+    void sayHello();
+}
+
+class Main {
+    public static void main(String[] args) {
+        Hello h = () -> System.out.println("Hello, Java!");
+        h.sayHello();
+    }
+}
+
+
+Output:
+
+Hello, Java!
+
+
+Example 2: With Parameters
+
+@FunctionalInterface
+interface MathOperation {
+    int operate(int a, int b);
+}
+
+class Main {
+    public static void main(String[] args) {
+        MathOperation add = (a, b) -> a + b;
+        MathOperation multiply = (a, b) -> a * b;
+
+        System.out.println(add.operate(5, 3));      // 8
+        System.out.println(multiply.operate(5, 3)); // 15
+    }
+}
+
+
+Example 3: With Multiple Statements
+
+@FunctionalInterface
+interface Greeting {
+    void greet(String name);
+}
+
+class Main {
+    public static void main(String[] args) {
+        Greeting g = (name) -> {
+            System.out.println("Hello, " + name);
+            System.out.println("Welcome to Lambda Expressions!");
+        };
+        g.greet("Atul");
+    }
+}
+
+🧩 3. Built-in Functional Interfaces (java.util.function)
+
+Java provides several predefined functional interfaces in java.util.function package.
+
+Interface	Method	Description	Example
+Predicate<T>	boolean test(T t)	Tests a condition	(x) -> x > 10
+Function<T, R>	R apply(T t)	Converts one type to another	(s) -> s.length()
+Consumer<T>	void accept(T t)	Consumes value (no return)	(x) -> System.out.println(x)
+Supplier<T>	T get()	Supplies a value	() -> "Hello"
+BiFunction<T, U, R>	R apply(T t, U u)	Two inputs → one output	(a,b) -> a+b
+Example using Built-in Functional Interfaces
+import java.util.function.*;
+
+class Main {
+    public static void main(String[] args) {
+        Predicate<Integer> isEven = (n) -> n % 2 == 0;
+        Function<String, Integer> length = (s) -> s.length();
+        Consumer<String> print = (msg) -> System.out.println(msg);
+        Supplier<Double> random = () -> Math.random();
+
+        System.out.println(isEven.test(10)); // true
+        System.out.println(length.apply("Atul")); // 4
+        print.accept("Hello Functional Interface!"); // prints
+        System.out.println(random.get()); // random number
+    }
+}
+
+⚡ 4. Why Use Functional Interfaces and Lambdas?
+Benefit	Description
+Less boilerplate	No need for anonymous inner classes
+Readable code	Compact and clean
+Functional style	Enables Stream API and method chaining
+Parallel execution	Works smoothly with Java Streams
+🧠 5. Functional Interface + Lambda = Stream Power
+
+Example:
+
+List<Integer> nums = Arrays.asList(1, 2, 3, 4, 5);
+
+nums.stream()
+    .filter(n -> n % 2 == 0)     // Predicate
+    .map(n -> n * n)             // Function
+    .forEach(System.out::println); // Consumer
+
+
+Output:
+
+4
+16
+
+✅ Summary Table
+Concept	Description	Example
+Functional Interface	Interface with 1 abstract method	Runnable, Callable, Comparator
+Lambda Expression	Compact implementation of Functional Interface	(a,b) -> a+b
+Built-in FI Examples	Predicate, Function, Consumer, Supplier	Used in Stream API
+Annotation	@FunctionalInterface	Optional but recommended
